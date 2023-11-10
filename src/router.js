@@ -4,6 +4,7 @@ import Index from "./components/Index";
 import Error from "./components/Error";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
+import SignOut from "./components/SignOut";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
         path: "/sign-up",
         element: <SignUp />,
       },
+      {
+        path: "/sign-out",
+        element: <SignOut />,
+      }
     ],
   },
 ]);
