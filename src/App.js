@@ -1,6 +1,7 @@
 import "./App.css";
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from "@firebase/firestore";
 import { NavLink, Outlet, useNavigation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import { Container, Nav, Navbar, Alert, Spinner } from "react-bootstrap";
@@ -18,6 +19,7 @@ const app = initializeApp({
 
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+const firestore = getFirestore(app);
 
 function App() {
   const navigate = useNavigate();
@@ -50,7 +52,7 @@ function App() {
     <>
       <NavBar context={context} />
       <Flash flashData={flashData} setFlashData={setFlashData} />
-      <Container className="text-center mt-3">
+      <Container className="text-center py-4">
         {useNavigation().state === "loading" ? (
           <LoadingSpinner />
         ) : (
@@ -62,9 +64,6 @@ function App() {
 }
 
 function NavBar({ context }) {
-  //Add
-  const [toggled, setToggled] = useState();
-
   return (
     <Navbar
       expand="lg"
@@ -89,44 +88,36 @@ function NavBar({ context }) {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Item>
-              <NavLink className="nav-link" to="/">
-                Hem
-              </NavLink>
-            </Nav.Item>
-            {!context.user && (
+            <Link title="Hem" path="/" />
+            <Link title="Tabell" path="/standings" />
+            <Link title="Admin" path="/admin" />
+          </Nav>
+          <Nav>
+            {context.user ? (
               <>
-                <Nav.Item>
-                  <NavLink className="nav-link" to="/sign-in">
-                    Logga In
-                  </NavLink>
-                </Nav.Item>
-                <Nav.Item>
-                  <NavLink className="nav-link" to="/sign-up">
-                    Skapa Konto
-                  </NavLink>
-                </Nav.Item>
+                <Link title={context.user.email} path={`/profile/${context.user.uid}`} />
+                <Link title="Logga Ut" path="/sign-out" />
+              </>
+            ) : (
+              <>
+                <Link title="Logga In" path="/sign-in" />
+                <Link title="Skapa Konto" path="/sign-up" />
               </>
             )}
           </Nav>
-          {context.user && (
-            <Nav>
-              <Navbar.Text>Inloggad som: </Navbar.Text>
-              <Nav.Item>
-                <NavLink className="nav-link" to="/profile">
-                  {context.user.email}
-                </NavLink>
-              </Nav.Item>
-              <Nav.Item>
-                <NavLink className="nav-link" to="/sign-out">
-                  Logga Ut
-                </NavLink>
-              </Nav.Item>
-            </Nav>
-          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>
+  );
+}
+
+function Link({ title, path }) {
+  return (
+    <Nav.Item>
+      <NavLink className="nav-link" to={path}>
+        {title}
+      </NavLink>
+    </Nav.Item>
   );
 }
 
@@ -159,4 +150,4 @@ function LoadingSpinner() {
 }
 
 export default App;
-export { auth, googleProvider };
+export { auth, googleProvider, firestore };

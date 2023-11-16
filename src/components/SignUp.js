@@ -1,8 +1,9 @@
-import { auth, googleProvider } from "../App";
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth } from "../App";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import { useOutletContext } from "react-router-dom";
+import { GoogleSignIn } from "./SignIn";
 
 export default function SignUp() {
   const context = useOutletContext();
@@ -11,33 +12,13 @@ export default function SignUp() {
     <>
       <h1>Skapa Konto</h1>
       <Container className="p-3">
-        <GoogleSignUp context={context} />
+        <GoogleSignIn context={context} />
         <div className="divider d-flex align-items-center my-4">
           <p className="text-center fw-light fw-italic mx-3 mb-0">Eller</p>
         </div>
         <EmailSignUp context={context} />
       </Container>
     </>
-  );
-}
-
-function GoogleSignUp({ context }) {
-  const handleSubmit = async () => {
-    signInWithPopup(auth, googleProvider)
-      .then(() => {
-        context.navigate("/");
-        context.flash("success", "Konto Skapat!");
-      })
-      .catch((error) => {
-        console.log(error.code, error.message);
-        context.flash("danger", `Error ${error.code}: ${error.message}`);
-      });
-  };
-
-  return (
-    <Button variant="outline-primary" onClick={handleSubmit}>
-      Skapa konto med Google
-    </Button>
   );
 }
 

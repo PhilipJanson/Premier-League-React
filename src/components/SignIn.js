@@ -98,3 +98,5 @@ function FormComponent({ type, controlId, onChange, label, placeholder }) {
     </Form.Group>
   );
 }
+
+export { GoogleSignIn };
